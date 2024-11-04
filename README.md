@@ -71,13 +71,7 @@ Follow these steps to set up the application:
 
    > Note: If you're using **PyQt5** or **PySide2**, make sure to uncomment the appropriate line in `requirements.txt`.
 
-5. **Set Up Environment Variables (Optional)**
 
-   If your application uses API keys or other sensitive information, create a `.env` file in the root directory of the project. Add your environment variables in the following format:
-
-   ```env
-   API_KEY=your_api_key_here
-   ```
 
 ## Usage
 
