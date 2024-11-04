@@ -1,8 +1,3 @@
-Certainly! Below is the updated `README.md` file, including the specific sections and commands you've provided in a clear and organized manner.
-
-### Sample `README.md`
-
-```markdown
 # PI-Eugenio
 
 Welcome to PI-Eugenio! This application is designed using the Model-View-Controller (MVC) pattern and makes API calls to provide functionality. Follow the steps below to set up and run the application on your local machine.
@@ -76,13 +71,7 @@ Follow these steps to set up the application:
 
    > Note: If you're using **PyQt5** or **PySide2**, make sure to uncomment the appropriate line in `requirements.txt`.
 
-5. **Set Up Environment Variables (Optional)**
 
-   If your application uses API keys or other sensitive information, create a `.env` file in the root directory of the project. Add your environment variables in the following format:
-
-   ```env
-   API_KEY=your_api_key_here
-   ```
 
 ## Usage
 
@@ -115,5 +104,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Thank you for using PI-Eugenio! If you have any questions or issues, feel free to open an issue in the GitHub repository.
-```
 
