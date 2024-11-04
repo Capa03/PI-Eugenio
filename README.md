@@ -1,8 +1,3 @@
-Certainly! Below is the updated `README.md` file, including the specific sections and commands you've provided in a clear and organized manner.
-
-### Sample `README.md`
-
-```markdown
 # PI-Eugenio
 
 Welcome to PI-Eugenio! This application is designed using the Model-View-Controller (MVC) pattern and makes API calls to provide functionality. Follow the steps below to set up and run the application on your local machine.
@@ -115,5 +110,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Thank you for using PI-Eugenio! If you have any questions or issues, feel free to open an issue in the GitHub repository.
-```
 
