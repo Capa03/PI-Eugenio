@@ -1,0 +1,24 @@
+# Uncomment the appropriate line for your chosen GUI framework
+
+# For Tkinter (standard library, no need to install)
+# tkinter           # Not needed in requirements.txt
+
+# If using PyQt5 or PySide2, uncomment one of the following lines:
+# PyQt5
+# PySide2
+
+# HTTP requests
+requests          # For making API calls
+
+# Data handling (optional)
+pandas            # For data manipulation and analysis (optional)
+numpy             # For numerical operations (optional)
+
+# Environment variables (optional, for managing API keys and secrets)
+python-dotenv     # For loading environment variables from a .env file
+
+# Logging (optional)
+loguru            # For enhanced logging capabilities
+
+# Testing (optional, for unit tests)
+pytest            # For running tests
