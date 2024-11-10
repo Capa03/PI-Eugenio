@@ -1,14 +1,26 @@
-# src/controllers/main_controller.py
 from models.data_model import DataModel
 from views.main_view import MainView
+import re
 
-# MainController class
-# This class is responsible for controlling the flow of the application.
+
 class MainController:
     def __init__(self):
-        self.model = DataModel()
-        self.view = MainView()
+        self.model = DataModel()  
+        self.view = MainView(self)  
 
     def run(self):
-        data = self.model.get_data()
-        self.view.display_data(data)
+        # Possibly fetch data from model (if needed) and display it via the view
+        self.view.display_window()
+
+    def on_submit(self, text_widget):
+        # Fetch the text from the Text widget
+        user_input = text_widget.get("1.0", "end-1c")  
+        filtred_words = self.filter_words(user_input)  
+        self.model.search_images(filtred_words)  # Call the model's search_images method with the filtered words
+
+    def filter_words(self, words):
+        # Use regular expression to extract words between square brackets []
+        pattern = re.compile(r"\[(\w+)\]", re.IGNORECASE)  # Match word characters inside []
+        matches = pattern.findall(words)  # findall returns all matches
+        return matches  # Return the list of filtered words
+
