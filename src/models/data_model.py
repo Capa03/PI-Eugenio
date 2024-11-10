@@ -5,30 +5,33 @@ import os
 class DataModel:
     def __init__(self):
         self.base_url = 'https://api.arasaac.org/v1'
+        self.matrix = [[]]
 
-    def search_images(self, words):
+    def search_images(self, matrix):
+        self.matrix = matrix
         # This will hold the image data from API responses as a multidimensional list
         response = []
 
         # Loop through each word in the input list
-        for word in words:
-            print(f"Searching for images related to: {word}")
-            try:
-                # Make the API request
-                request = requests.get(f"{self.base_url}/pictograms/pt/search/{word}")
+        for word in matrix:
+            for w in word:
+                print(f"Searching for images related to: {w}")
+                try:
+                    # Make the API request
+                    request = requests.get(f"{self.base_url}/pictograms/pt/search/{w}")
 
-                # Check if the request was successful
-                if request.status_code == 200:
-                    # Append each word's response as a separate sublist
-                    response.append(request.json())
-                else:
-                    print(f"No image data found for the word: {word}")
-                    response.append([])  # Append an empty list if no data is found
+                    # Check if the request was successful
+                    if request.status_code == 200:
+                        # Append each word's response as a separate sublist
+                        response.append(request.json())
+                    else:
+                        print(f"No image data found for the word: {w}")
+                        response.append([])  # Append an empty list if no data is found
 
-            except requests.exceptions.RequestException as e:
-                print(f"An error occurred during the request for '{word}': {e}")
-                response.append([])  # Append an empty list in case of an error
-        
+                except requests.exceptions.RequestException as e:
+                    print(f"An error occurred during the request for '{w}': {e}")
+                    response.append([])  # Append an empty list in case of an error
+            
         return self.proccess_search(response)  # Process the response data
     
 
@@ -50,7 +53,6 @@ class DataModel:
         print(f"Word list: {word_list}")
         return self.download_image(word_list)  # Download the images
 
-  
 
     def download_image(self, response):
         # Ensure the 'CAT_IMG_TEST' directory exists
@@ -81,3 +83,6 @@ class DataModel:
                     print(f"Failed to download image with ID: {id} (Status code: {request.status_code})")
             except requests.exceptions.RequestException as e:
                 print(f"An error occurred during the request for image ID '{id}': {e}")
+
+        #Access matrix by self.matrix
+        #[['Ola', 'adeus'], ['sim', 'nao']]
