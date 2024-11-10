@@ -9,7 +9,7 @@ class DataModel:
 
     def search_images(self, matrix):
         self.matrix = matrix
-        # This will hold the image data from API responses as a multidimensional list
+
         response = []
 
         # Loop through each word in the input list
