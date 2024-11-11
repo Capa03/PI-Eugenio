@@ -1,6 +1,7 @@
 # src/models/data_model.py
 import requests
 import os
+import codecs
 
 class DataModel:
     def __init__(self):
@@ -80,9 +81,21 @@ class DataModel:
                         file.write(request.content)
                     print(f"Image with ID {id} saved successfully.")
                 else:
-                    print(f"Failed to download image with ID: {id} (Status code: {request.status_code})")
+                    print(f"Failed to download image with ID: {id} (Status code: {request.status_code})")  
             except requests.exceptions.RequestException as e:
                 print(f"An error occurred during the request for image ID '{id}': {e}")
+        self.create_keyboard(response) 
 
         #Access matrix by self.matrix
         #[['Ola', 'adeus'], ['sim', 'nao']]
+    def create_keyboard(self, response):
+        with codecs.open("STRING_FILE_TEST.tec", "w", "cp1252") as file: # cp1252 -> ANSI encoding or "utf-8"
+            x = 0 # keep track of the image id is in the array
+            for arr in self.matrix: # [['Ola', 'adeus'], ['sim', 'nao']] -> self.matrix ['Ola', 'adeus'] -> arr
+                l1 = "LINHA ?\n"
+                l2 = "GRUPO ?\n"
+                l3 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x]}.bmp:{arr[0]} ? {arr[0]} 1 -1 -1\n" # Syntax Warninng here (because of the \{)
+                l4 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x+1]}.bmp:{arr[1]} ? {arr[1]} 1 -1 -1\n" # Syntax Warninng here
+                x = x + 2 
+                file.writelines([l1,l2,l3,l4]) # write lines in file
+            file.close()
