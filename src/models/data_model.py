@@ -10,8 +10,9 @@ class DataModel:
         self.base_url = 'https://api.arasaac.org/v1'
         self.matrix = [[]]
 
-    def search_images(self, matrix):
+    def search_images(self, matrix, keyboard_name):
         self.matrix = matrix
+        self.keyboard_name = keyboard_name 
         response = []
 
         # Loop through each word in the input list
@@ -56,15 +57,15 @@ class DataModel:
         image = Image.open(BytesIO(request.content))
         image = image.convert("RGB")  # Convert to RGB if needed
         image = image.resize((200, 200))  # Resize to 200x200
-        bmp_path = f"CAT_IMG_TEST/{image_id}.bmp"
+        bmp_path = f"CAT_IMG_{self.keyboard_name}/{image_id}.bmp"
         image.save(bmp_path, "BMP")  # Save as BMP
         print(f"Image with ID {image_id} saved as BMP in 200x200 size.")
 
 
 
     def download_image(self, response):
-        if not os.path.exists("CAT_IMG_TEST"):
-            os.makedirs("CAT_IMG_TEST")
+        if not os.path.exists(f"CAT_IMG_{self.keyboard_name}"):
+            os.makedirs(f"CAT_IMG_{self.keyboard_name}")
         
         for id in response:
             try:
@@ -85,7 +86,7 @@ class DataModel:
         #Access matrix by self.matrix
         #[['Ola', 'adeus'], ['sim', 'nao']]
     def create_keyboard(self, response):
-        with codecs.open("STRING_FILE_TEST.tec", "w", "cp1252") as file: # cp1252 -> ANSI encoding or "utf-8"
+        with codecs.open(f"{self.keyboard_name}.tec", "w", "cp1252") as file: # cp1252 -> ANSI encoding or "utf-8"
             x = 0 # keep track of the image id is in the array
             for arr in self.matrix: # [['Ola', 'adeus'], ['sim', 'nao']] -> self.matrix ['Ola', 'adeus'] -> arr
                 l1 = "LINHA ?\n"

@@ -12,11 +12,13 @@ class MainController:
         # Possibly fetch data from model (if needed) and display it via the view
         self.view.display_window()
 
-    def on_submit(self, text_widget):
+    def on_submit(self, text_widget, keyboard_name):
         # Fetch the text from the Text widget
         user_input = text_widget.get("1.0", "end-1c")  
+        keyboard_name = keyboard_name.get("1.0", "end-1c")
         filtred_words = self.filter_words(user_input)  
-        self.model.search_images(filtred_words)  # Call the model's search_images method with the filtered words
+        print (keyboard_name)
+        self.model.search_images(filtred_words, keyboard_name)  # Call the model's search_images method with the filtered words
 
     def filter_words(self, words):
         # Split the input text into lines to represent rows in the matrix
@@ -29,5 +31,6 @@ class MainController:
             row = re.findall(r"\[(\w+)\]", line)  
             if row:
                 matrix.append(row)  # Append the row to the matrix
+                print(matrix)
         return matrix
 
