@@ -2,30 +2,40 @@ import requests
 import os
 from PIL import Image
 from io import BytesIO
+import codecs
+
 
 class DataModel:
     def __init__(self):
         self.base_url = 'https://api.arasaac.org/v1'
+        self.matrix = [[]]
 
-    def search_images(self, words):
+    def search_images(self, matrix):
+        self.matrix = matrix
         response = []
 
-        for word in words:
-            print(f"Searching for images related to: {word}")
-            try:
-                request = requests.get(f"{self.base_url}/pictograms/pt/search/{word}")
+        # Loop through each word in the input list
+        for word in matrix:
+            for w in word:
+                print(f"Searching for images related to: {w}")
+                try:
+                    # Make the API request
+                    request = requests.get(f"{self.base_url}/pictograms/pt/search/{w}")
 
-                if request.status_code == 200:
-                    response.append(request.json())
-                else:
-                    print(f"No image data found for the word: {word}")
-                    response.append([])
+                    # Check if the request was successful
+                    if request.status_code == 200:
+                        # Append each word's response as a separate sublist
+                        response.append(request.json())
+                    else:
+                        print(f"No image data found for the word: {w}")
+                        response.append([])  # Append an empty list if no data is found
 
-            except requests.exceptions.RequestException as e:
-                print(f"An error occurred during the request for '{word}': {e}")
-                response.append([])
-        
-        return self.proccess_search(response)
+                except requests.exceptions.RequestException as e:
+                    print(f"An error occurred during the request for '{w}': {e}")
+                    response.append([])  # Append an empty list in case of an error
+            
+        return self.proccess_search(response)  # Process the response data
+    
 
     def proccess_search(self, response):
         word_list = []
@@ -63,8 +73,26 @@ class DataModel:
                 if request.status_code == 200:
                     self.convert_img(request, id)
                 else:
-                    print(f"Failed to download image with ID: {id} (Status code: {request.status_code})")
+                    print(f"Failed to download image with ID: {id} (Status code: {request.status_code})")  
             except requests.exceptions.RequestException as e:
                 print(f"An error occurred during the request for image ID '{id}': {e}")
+
             except IOError as e:
                 print(f"An error occurred while processing the image with ID '{id}': {e}")
+
+        self.create_keyboard(response) 
+
+        #Access matrix by self.matrix
+        #[['Ola', 'adeus'], ['sim', 'nao']]
+    def create_keyboard(self, response):
+        with codecs.open("STRING_FILE_TEST.tec", "w", "cp1252") as file: # cp1252 -> ANSI encoding or "utf-8"
+            x = 0 # keep track of the image id is in the array
+            for arr in self.matrix: # [['Ola', 'adeus'], ['sim', 'nao']] -> self.matrix ['Ola', 'adeus'] -> arr
+                l1 = "LINHA ?\n"
+                l2 = "GRUPO ?\n"
+                l3 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x]}.bmp:{arr[0]} ? {arr[0]} 1 -1 -1\n" # Syntax Warninng here (because of the \{)
+                l4 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x+1]}.bmp:{arr[1]} ? {arr[1]} 1 -1 -1\n" # Syntax Warninng here
+                x = x + 2 
+                file.writelines([l1,l2,l3,l4]) # write lines in file
+            file.close()
+

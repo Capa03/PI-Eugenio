@@ -19,8 +19,15 @@ class MainController:
         self.model.search_images(filtred_words)  # Call the model's search_images method with the filtered words
 
     def filter_words(self, words):
-        # Use regular expression to extract words between square brackets []
-        pattern = re.compile(r"\[(\w+)\]", re.IGNORECASE)  # Match word characters inside []
-        matches = pattern.findall(words)  # findall returns all matches
-        return matches  # Return the list of filtered words
+        # Split the input text into lines to represent rows in the matrix
+        lines = words.strip().splitlines()  
+        matrix = []
+
+        # Process each line separately
+        for line in lines:
+            # Find all words within brackets for the current line
+            row = re.findall(r"\[(\w+)\]", line)  
+            if row:
+                matrix.append(row)  # Append the row to the matrix
+        return matrix
 
