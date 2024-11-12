@@ -1,7 +1,9 @@
-# src/models/data_model.py
 import requests
 import os
+from PIL import Image
+from io import BytesIO
 import codecs
+
 
 class DataModel:
     def __init__(self):
@@ -10,7 +12,6 @@ class DataModel:
 
     def search_images(self, matrix):
         self.matrix = matrix
-
         response = []
 
         # Loop through each word in the input list
@@ -42,48 +43,43 @@ class DataModel:
             print("No image data found for any of the words.")
             return word_list
 
-        # Iterate through each word's response data
         for word_data in response:
-            # Check if there is valid data and filter out items where 'schematic' is True
             filtered_data = [item for item in word_data if item.get('schematic', False) is False]
 
-            # Append the first item's '_id' from the filtered list, if any items remain after filtering
             if filtered_data:
                 word_list.append(filtered_data[0]['_id'])
 
         print(f"Word list: {word_list}")
-        return self.download_image(word_list)  # Download the images
+        return self.download_image(word_list)
+    
+    def convert_img(self, request, image_id):
+        image = Image.open(BytesIO(request.content))
+        image = image.convert("RGB")  # Convert to RGB if needed
+        image = image.resize((200, 200))  # Resize to 200x200
+        bmp_path = f"CAT_IMG_TEST/{image_id}.bmp"
+        image.save(bmp_path, "BMP")  # Save as BMP
+        print(f"Image with ID {image_id} saved as BMP in 200x200 size.")
+
 
 
     def download_image(self, response):
-        # Ensure the 'CAT_IMG_TEST' directory exists
         if not os.path.exists("CAT_IMG_TEST"):
             os.makedirs("CAT_IMG_TEST")
         
-        # Loop through each image data
         for id in response:
             try:
-                # Make the API request to get the image data
                 request = requests.get(f"{self.base_url}/pictograms/{id}?download=true")
-                
-                # Check if the request was successful
+
                 if request.status_code == 200:
-                    # Get the content type from the response headers (e.g., image/png, image/jpeg)
-                    content_type = request.headers.get('Content-Type', '')
-                    # Set the file extension based on the content type
-                    if 'image' in content_type:
-                        file_extension = content_type.split('/')[-1]  # e.g., 'jpeg', 'png'
-                    else:
-                        file_extension = 'bmp'  # Default to bmp if the content type is not an image
-                    
-                    # Save the image to a file
-                    with open(f"CAT_IMG_TEST/{id}.{file_extension}", "wb") as file:
-                        file.write(request.content)
-                    print(f"Image with ID {id} saved successfully.")
+                    self.convert_img(request, id)
                 else:
                     print(f"Failed to download image with ID: {id} (Status code: {request.status_code})")  
             except requests.exceptions.RequestException as e:
                 print(f"An error occurred during the request for image ID '{id}': {e}")
+
+            except IOError as e:
+                print(f"An error occurred while processing the image with ID '{id}': {e}")
+
         self.create_keyboard(response) 
 
         #Access matrix by self.matrix
@@ -99,3 +95,4 @@ class DataModel:
                 x = x + 2 
                 file.writelines([l1,l2,l3,l4]) # write lines in file
             file.close()
+
