@@ -22,3 +22,5 @@ loguru            # For enhanced logging capabilities
 
 # Testing (optional, for unit tests)
 pytest            # For running tests
+
+pillow
