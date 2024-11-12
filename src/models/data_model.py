@@ -88,12 +88,15 @@ class DataModel:
     def create_keyboard(self, response):
         with codecs.open(f"{self.keyboard_name}.tec", "w", "cp1252") as file: # cp1252 -> ANSI encoding or "utf-8"
             x = 0 # keep track of the image id is in the array
-            for arr in self.matrix: # [['Ola', 'adeus'], ['sim', 'nao']] -> self.matrix ['Ola', 'adeus'] -> arr
+            v = 0
+            for i in range(len(self.matrix)):
                 l1 = "LINHA ?\n"
                 l2 = "GRUPO ?\n"
-                l3 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x]}.bmp:{arr[0]} ? {arr[0]} 1 -1 -1\n" # Syntax Warninng here (because of the \{)
-                l4 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x+1]}.bmp:{arr[1]} ? {arr[1]} 1 -1 -1\n" # Syntax Warninng here
-                x = x + 2 
-                file.writelines([l1,l2,l3,l4]) # write lines in file
-            file.close()
+                file.writelines([l1,l2])
+                for arr in self.matrix[i]: # [['Ola', 'adeus'], ['sim', 'nao']] -> self.matrix ['Ola', 'adeus'] -> arr
+                    l3 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x]}.bmp:{arr} ? {arr} 1 -1 -1\n" # Syntax Warninng here (because of the \{)
+                    x = x + 1
+                    file.writelines([l3])
+                    #file.writelines([l1,l2,l3,l4]) # write lines in file
+                #file.close()
 
