@@ -94,7 +94,7 @@ class DataModel:
                 l2 = "GRUPO ?\n"
                 file.writelines([l1,l2])
                 for arr in self.matrix[i]: # [['Ola', 'adeus'], ['sim', 'nao']] -> self.matrix ['Ola', 'adeus'] -> arr
-                    l3 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x]}.bmp:{arr} ? {arr} 1 -1 -1\n" # Syntax Warninng here (because of the \{)
+                    l3 = f"TECLA TECLA_IMAGEM CAT_IMG_Teste\{response[x]}.bmp:{arr} ? {arr};;; 1 -1 -1\n" # Syntax Warninng here (because of the \{)
                     x = x + 1
                     file.writelines([l3])
                     #file.writelines([l1,l2,l3,l4]) # write lines in file

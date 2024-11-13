@@ -9,8 +9,6 @@ class MainView:
         root.title("Image Search and Download")
         root.geometry("500x300")
 
-        
-
         # Create a Text widget for input
         text_widget = Text(root, height=10, width=40)
         text_widget.pack(pady=10)
