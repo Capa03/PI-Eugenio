@@ -17,11 +17,14 @@ class DataModel:
             # Mapeia palavras para os resultados da API
             responses, errors = self._search_images(matrix)
             if not responses:
-                raise ValueError("No responses received from the API.", errors)
+                raise ValueError("No responses received from the API.")
+            
+            if errors:
+                raise ValueError(f"Errors found while searching images for: {', '.join(errors)}")
 
             filtered_ids, invalid_words = self._process_image_responses(matrix, responses)
             if invalid_words:
-                print(f"Invalid inputs with no images found: {', '.join(invalid_words)}")
+                raise ValueError(f"Invalid inputs with no images found: {', '.join(invalid_words)}")
 
             if not filtered_ids:
                 raise ValueError("No valid images found for the given input.")
