@@ -1,0 +1,8 @@
+LINHA ?
+GRUPO ?
+TECLA TECLA_IMAGEM CAT_IMG_Teste\6009.bmp:ola ? ola 1 -1 -1
+TECLA TECLA_IMAGEM CAT_IMG_Teste\5896.bmp:adeus ? adeus 1 -1 -1
+LINHA ?
+GRUPO ?
+TECLA TECLA_IMAGEM CAT_IMG_Teste\5583.bmp:sim ? sim 1 -1 -1
+TECLA TECLA_IMAGEM CAT_IMG_Teste\5525.bmp:nao ? nao 1 -1 -1

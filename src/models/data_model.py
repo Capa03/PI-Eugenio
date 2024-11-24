@@ -1,88 +1,126 @@
-# src/models/data_model.py
 import requests
 import os
+from PIL import Image
+from io import BytesIO
+import codecs
+
 
 class DataModel:
-    def __init__(self):
-        self.base_url = 'https://api.arasaac.org/v1'
-        self.matrix = [[]]
+    def __init__(self, base_url="https://api.arasaac.org/v1"):
+        self.base_url = base_url
 
-    def search_images(self, matrix):
-        self.matrix = matrix
-        # This will hold the image data from API responses as a multidimensional list
-        response = []
-
-        # Loop through each word in the input list
-        for word in matrix:
-            for w in word:
-                print(f"Searching for images related to: {w}")
-                try:
-                    # Make the API request
-                    request = requests.get(f"{self.base_url}/pictograms/pt/search/{w}")
-
-                    # Check if the request was successful
-                    if request.status_code == 200:
-                        # Append each word's response as a separate sublist
-                        response.append(request.json())
-                    else:
-                        print(f"No image data found for the word: {w}")
-                        response.append([])  # Append an empty list if no data is found
-
-                except requests.exceptions.RequestException as e:
-                    print(f"An error occurred during the request for '{w}': {e}")
-                    response.append([])  # Append an empty list in case of an error
+    def search_and_process_images(self, matrix, keyboard_name):
+        """
+        Orquestra a pesquisa, download e processamento das imagens.
+        """
+        try:
+            # Mapeia palavras para os resultados da API
+            responses, errors = self._search_images(matrix)
+            if not responses:
+                raise ValueError("No responses received from the API.")
             
-        return self.proccess_search(response)  # Process the response data
-    
+            if errors:
+                raise ValueError(f"Errors found while searching images for: {', '.join(errors)}")
 
-    def proccess_search(self, response):
-        word_list = []
-        if not response:
-            print("No image data found for any of the words.")
-            return word_list
+            filtered_ids, invalid_words = self._process_image_responses(matrix, responses)
+            if invalid_words:
+                raise ValueError(f"Invalid inputs with no images found: {', '.join(invalid_words)}")
 
-        # Iterate through each word's response data
-        for word_data in response:
-            # Check if there is valid data and filter out items where 'schematic' is True
-            filtered_data = [item for item in word_data if item.get('schematic', False) is False]
+            if not filtered_ids:
+                raise ValueError("No valid images found for the given input.")
 
-            # Append the first item's '_id' from the filtered list, if any items remain after filtering
-            if filtered_data:
-                word_list.append(filtered_data[0]['_id'])
+            self._download_images(filtered_ids, keyboard_name)
+            self._create_keyboard(matrix, keyboard_name, filtered_ids)
+        except Exception as e:
+            raise RuntimeError(f"Error in processing images: {e}")
 
-        print(f"Word list: {word_list}")
-        return self.download_image(word_list)  # Download the images
-
-
-    def download_image(self, response):
-        # Ensure the 'CAT_IMG_TEST' directory exists
-        if not os.path.exists("CAT_IMG_TEST"):
-            os.makedirs("CAT_IMG_TEST")
-        
-        # Loop through each image data
-        for id in response:
-            try:
-                # Make the API request to get the image data
-                request = requests.get(f"{self.base_url}/pictograms/{id}?download=true")
-                
-                # Check if the request was successful
-                if request.status_code == 200:
-                    # Get the content type from the response headers (e.g., image/png, image/jpeg)
-                    content_type = request.headers.get('Content-Type', '')
-                    # Set the file extension based on the content type
-                    if 'image' in content_type:
-                        file_extension = content_type.split('/')[-1]  # e.g., 'jpeg', 'png'
+    def _search_images(self, matrix):
+        """
+        Busca imagens na API para cada palavra da matriz e identifica erros.
+        """
+        responses = []
+        errors = []
+        for row in matrix:
+            for word in row:
+                try:
+                    response = requests.get(f"{self.base_url}/pictograms/pt/search/{word}")
+                    if response.status_code == 200:
+                        responses.append((word, response.json()))
                     else:
-                        file_extension = 'bmp'  # Default to bmp if the content type is not an image
-                    
-                    # Save the image to a file
-                    with open(f"CAT_IMG_TEST/{id}.{file_extension}", "wb") as file:
-                        file.write(request.content)
-                    print(f"Image with ID {id} saved successfully.")
-                else:
-                    print(f"Failed to download image with ID: {id} (Status code: {request.status_code})")
-            except requests.exceptions.RequestException as e:
-                print(f"An error occurred during the request for image ID '{id}': {e}")
+                        errors.append(word)
+                        print(f"No data found for: {word} (Status code: {response.status_code})")
+                except requests.exceptions.RequestException as e:
+                    errors.append(word)
+                    print(f"API request error for '{word}': {e}")
+        return responses, errors
 
-        #Access matrix by self.matrix
-        #[['Ola', 'adeus'], ['sim', 'nao']]
+    def _process_image_responses(self, matrix, responses):
+        """
+        Filtra IDs de imagens relevantes e retorna palavras inválidas.
+        """
+        filtered_ids = []
+        invalid_words = []
+
+        word_response_map = {word: response for word, response in responses}
+
+        for row in matrix:
+            for word in row:
+                response = word_response_map.get(word, [])
+                valid_images = [item for item in response if not item.get("schematic", False)]
+                if valid_images:
+                    filtered_ids.append(valid_images[0]["_id"])
+                else:
+                    invalid_words.append(word)
+
+        return filtered_ids, invalid_words
+
+    def _download_images(self, image_ids, keyboard_name):
+        """
+        Faz o download e salva imagens.
+        """
+        output_dir = f"CAT_IMG_{keyboard_name}"
+        os.makedirs(output_dir, exist_ok=True)
+
+        for image_id in image_ids:
+            try:
+                response = requests.get(f"{self.base_url}/pictograms/{image_id}?download=true")
+                if response.status_code == 200:
+                    self._save_image(response, image_id, output_dir)
+                else:
+                    print(f"Failed to download image ID {image_id}. Status code: {response.status_code}")
+            except Exception as e:
+                print(f"Failed to download image {image_id}: {e}")
+
+    def _save_image(self, response, image_id, output_dir):
+        """
+        Salva uma imagem no formato BMP.
+        """
+        try:
+            image = Image.open(BytesIO(response.content))
+            image = image.convert("RGB")
+            image = image.resize((200, 200))
+            image_path = os.path.join(output_dir, f"{image_id}.bmp")
+            image.save(image_path, "BMP")
+            print(f"Saved image: {image_path}")
+        except Exception as e:
+            print(f"Failed to save image ID {image_id}: {e}")
+
+    def _create_keyboard(self, matrix, keyboard_name, image_ids):
+        """
+        Cria o arquivo .tec com as configurações do teclado.
+        """
+        keyboard_file = f"{keyboard_name}.tec"
+        try:
+            with codecs.open(keyboard_file, "w", "cp1252") as file:
+                for row in matrix:
+                    file.writelines(["LINHA ?\n", "GRUPO ?\n"])
+                    for word in row:
+                        image_id = image_ids.pop(0) if image_ids else "MISSING"
+                        if image_id == "MISSING":
+                            print(f"Warning: No image found for '{word}' while creating keyboard.")
+                        file.write(
+                            f"TECLA TECLA_IMAGEM CAT_IMG_{keyboard_name}\\{image_id}.bmp:{word} ? {word};;; 1 -1 -1\n"
+                        )
+            print(f"Keyboard file created: {keyboard_file}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to create keyboard file: {e}")
