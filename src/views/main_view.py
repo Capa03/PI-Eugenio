@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+from utils import enum_type
 
 class MainView:
     def __init__(self, controller):
@@ -33,8 +34,11 @@ class MainView:
         keyboard_name = self.keyboard_name.get().strip()
         self.controller.on_submit(user_input, keyboard_name)
 
-    def show_error(self, message):
+    def show_error(self, type, message):
         """
         Exibe uma modal de erro ao usuário.
         """
-        messagebox.showerror("Error", message)
+        if(type == enum_type.Message.ERROR):
+            messagebox.showerror("Error", message)
+        if(type == enum_type.Message.SUCCESS):
+            messagebox.showinfo("Success", message)

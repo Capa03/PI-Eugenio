@@ -1,7 +1,7 @@
 import re
 from models.data_model import DataModel
 from views.main_view import MainView
-
+from utils import enum_type
 
 class MainController:
     def __init__(self):
@@ -16,18 +16,21 @@ class MainController:
         Processa a entrada do usuário e aciona a lógica de negócio.
         """
         if not user_input or not keyboard_name:
-            self.view.show_error("Text input and keyboard name cannot be empty.")
+            self.view.show_error(enum_type.Message.ERROR, "Text input and keyboard name cannot be empty.")
             return
 
         try:
+            print(user_input)
             word_matrix = self._extract_words_from_input(user_input)
             if not word_matrix:
-                self.view.show_error("No valid words found in the input. Ensure words are in brackets [ ].")
+                self.view.show_error(enum_type.Message.ERROR, "No valid words found in the input. Ensure words are in brackets [ ].")
                 return
 
             self.model.search_and_process_images(word_matrix, keyboard_name)
         except Exception as e:
-            self.view.show_error(f"An unexpected error occurred: {e}")
+            self.view.show_error(enum_type.Message.ERROR, f"An unexpected error occurred: {e}")
+            return        
+        self.view.show_error(enum_type.Message.SUCCESS, f"Keyboard created with the words: {user_input}")
 
     def _extract_words_from_input(self, input_text):
         """
