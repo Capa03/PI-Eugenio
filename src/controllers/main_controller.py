@@ -40,8 +40,7 @@ class MainController:
         word_matrix = []
 
         for line in lines:
-            words_in_line = re.findall(r"\[(\w+)\]", line)
-            if words_in_line:
-                word_matrix.append(words_in_line)
-
+            if line:
+                word_matrix.append(line)
+            
         return word_matrix
