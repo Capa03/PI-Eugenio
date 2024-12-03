@@ -1,0 +1,4 @@
+LINHA ?
+GRUPO ?
+TECLA TECLA_IMAGEM CAT_IMG_capa\8828.bmp:Capa ? Capa;;; 1 -1 -1
+TECLA TECLA_NORMAL capa capa capa;;; 1 -1 -1
