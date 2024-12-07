@@ -39,9 +39,33 @@ class KeyboardModel:
         """
         Creates a .tec file using the matrix and downloaded images.
         """
-        f = open(keyboard_name + ".tec", "r")
-        #print(f.read())
-        return f.read()
+        file = open(keyboard_name + ".tec", "r")
+        lines = list(file)
+        keys = list()
+        count = 0
+        
+        isNewLine = False
+        for line in lines:
+            if(line.startswith("LINHA") or line.startswith("GRUPO")):
+                if(count > 2):
+                    isNewLine = True
+            else:
+                if(isNewLine):
+                    start = line.find(":") + 1
+                    end = line.find("?") - 1
+                    keys.append("\n[" + line[start:end] + "]")
+                    isNewLine = False
+                else:
+                    start = line.find(":") + 1
+                    end = line.find("?") - 1
+                    keys.append("[" + line[start:end] + "]")
+            count = count + 1
+
+        returnString = ""
+        for key in keys:
+            returnString = returnString + key + " "
+
+        return returnString
 
         
         
