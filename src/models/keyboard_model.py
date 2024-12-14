@@ -39,26 +39,35 @@ class KeyboardModel:
         """
         Creates a .tec file using the matrix and downloaded images.
         """
-        file = open(keyboard_name + ".tec", "r")
-        lines = list(file)
-        keys = list()
-        count = 0
+        file = open(keyboard_name + ".tec", "r") # Open File
+        lines = list(file) # list of lines in file
+        keys = list() # list of keys from keyboard
+        count = 0 # regular count in order to count the first two lines that are just for create another line
         
-        isNewLine = False
+        isNewLine = False # this boolean is here in order to check if the first two lines from a line from the keyboard. So we can apply /n to write in the program so the user can see we are in another line
         for line in lines:
             if(line.startswith("LINHA") or line.startswith("GRUPO")):
                 if(count > 2):
                     isNewLine = True
             else:
                 if(isNewLine):
-                    start = line.find(":") + 1
-                    end = line.find("?") - 1
-                    keys.append("\n[" + line[start:end] + "]")
-                    isNewLine = False
+                    if "TECLA_NORMAL" in line: # -> To Acess Normal key
+                        wordsInLine = line.split() # Splits the line into words
+                        keys.append("\n" + wordsInLine[wordsInLine.index("TECLA_NORMAL") + 1]) # this line takes the word in index and adds 1 is the word in front of the index word
+                        isNewLine = False
+                    else: # -> To Acess Pictogram Key
+                        start = line.find(":") + 1 # -> + 1 in order to just take the word
+                        end = line.find("?") - 1 # -> -1 in order to just take the word
+                        keys.append("\n[" + line[start:end] + "]") # in the line takes the specific place [] in line start and end and writes the word is between
+                        isNewLine = False
                 else:
-                    start = line.find(":") + 1
-                    end = line.find("?") - 1
-                    keys.append("[" + line[start:end] + "]")
+                    if "TECLA_NORMAL" in line:
+                        wordsInLine = line.split()
+                        keys.append(wordsInLine[wordsInLine.index("TECLA_NORMAL") + 1])
+                    else:
+                        start = line.find(":") + 1
+                        end = line.find("?") - 1
+                        keys.append("[" + line[start:end] + "]")
             count = count + 1
 
         returnString = ""
