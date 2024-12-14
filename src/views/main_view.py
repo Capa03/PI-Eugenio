@@ -23,8 +23,26 @@ class MainView:
         submit_button = Button(root, text="Submit", command=self._on_submit_click)
         submit_button.pack(pady=10)
 
+        
+        edit_button = Button(root, text="Edit", command=self._on_edit_click)
+        edit_button.pack(pady=5)
+
         # Start Tkinter event loop
         root.mainloop()
+
+    def _edit_text(self, txt):
+        #print(txt)
+        self.text_widget.delete(1.0, "end-1c")
+        self.text_widget.insert("end-1c", txt)
+
+    def _on_edit_click(self):
+        """
+        Lida com o evento de clique no botão de editar.
+        """
+        #user_input = self.text_widget.get("1.0", "end-1c").strip()
+        #self._edit_text()
+        keyboard_name = self.keyboard_name.get().strip()
+        self.controller.on_edit(keyboard_name)
 
     def _on_submit_click(self):
         """
