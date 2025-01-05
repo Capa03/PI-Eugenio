@@ -5,10 +5,13 @@ from io import BytesIO
 import codecs
 import re
 
+from models import keyboard_model
+
 
 class DataModel:
     def __init__(self, base_url="https://api.arasaac.org/v1"):
         self.base_url = base_url
+        self.keyboard = keyboard_model.KeyboardModel()
 
     def search_and_process_images(self, matrix, keyboard_name):
         """
@@ -24,9 +27,14 @@ class DataModel:
                 print(f"No valid images found for: {', '.join(invalid_words)}")
 
             self._download_images(filtered_ids, keyboard_name)
-            self._create_keyboard(matrix, keyboard_name, filtered_ids)
+            
+            self.keyboard._create_keyboard(matrix, keyboard_name, filtered_ids)
         except Exception as e:
             raise RuntimeError(f"Error in processing images: {e}")
+
+    def _read_file(self, keyboard_name):
+        return self.keyboard._edit_keyboard(keyboard_name)
+
 
     def _search_images(self, matrix):
         """
@@ -50,34 +58,6 @@ class DataModel:
                         errors.append(clean_word)
                         print(f"API request error for '{clean_word}': {e}")
         return responses, errors
-
-    def _create_keyboard(self, matrix, keyboard_name, image_ids):
-        """
-        Creates a .tec file using the matrix and downloaded images.
-        """
-        keyboard_file = f"{keyboard_name}.tec"
-        try:
-            with codecs.open(keyboard_file, "w", "cp1252") as file:
-                for row in matrix:
-                    file.writelines(["LINHA ?\n", "GRUPO ?\n"])
-                    words = self._split_row(row)
-                    for word in words:
-                        if word.startswith("[") and word.endswith("]"):
-                            clean_word = word[1:-1]
-                            if not image_ids:
-                                print(f"Warning: No more image IDs available for '{clean_word}'.")
-                                file.write(f"TECLA TECLA_NORMAL {clean_word} {clean_word} {clean_word};;; 1 -1 -1\n")
-                                continue
-
-                            image_id = image_ids.pop(0)
-                            file.write(
-                                f"TECLA TECLA_IMAGEM CAT_IMG_{keyboard_name}\\{image_id}.bmp:{clean_word} ? {clean_word};;; 1 -1 -1\n"
-                            )
-                        else:
-                            file.write(f"TECLA TECLA_NORMAL {word} {word} {word};;; 1 -1 -1\n")
-            print(f"Keyboard file created: {keyboard_file}")
-        except Exception as e:
-            raise RuntimeError(f"Failed to create keyboard file: {e}")
 
     def _download_images(self, image_ids, keyboard_name):
         """
@@ -130,7 +110,7 @@ class DataModel:
                     else:
                         invalid_words.append(clean_word)
         return filtered_ids, invalid_words
-
+    
     @staticmethod
     def _split_row(row):
         """
@@ -138,6 +118,8 @@ class DataModel:
         """
         # Extract bracketed terms or sequences of alphanumeric characters
         return re.findall(r'\[[^\]]+\]|\b\w+\b', row)
+
+
 
 
 
