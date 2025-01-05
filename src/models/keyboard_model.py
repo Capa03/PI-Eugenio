@@ -4,6 +4,8 @@ import re
 
 
 class KeyboardModel:
+    PASSED_GROUP_LINE = 2
+
     def __init__(self) -> None:
         pass
 
@@ -20,8 +22,7 @@ class KeyboardModel:
                     for word in words:
                         if word.startswith("[") and word.endswith("]"):
                             clean_word = word[1:-1]
-                            if not image_ids:
-                                print(f"Warning: No more image IDs available for '{clean_word}'.")
+                            if not image_ids: 
                                 file.write(f"TECLA TECLA_NORMAL {clean_word} {clean_word} {clean_word};;; 1 -1 -1\n")
                                 continue
 
@@ -31,7 +32,6 @@ class KeyboardModel:
                             )
                         else:
                             file.write(f"TECLA TECLA_NORMAL {word} {word} {word};;; 1 -1 -1\n")
-            print(f"Keyboard file created: {keyboard_file}")
         except Exception as e:
             raise RuntimeError(f"Failed to create keyboard file: {e}")
         
@@ -47,7 +47,7 @@ class KeyboardModel:
         isNewLine = False # this boolean is here in order to check if the first two lines from a line from the keyboard. So we can apply /n to write in the program so the user can see we are in another line
         for line in lines:
             if(line.startswith("LINHA") or line.startswith("GRUPO")):
-                if(count > 2):
+                if(count > self.PASSED_GROUP_LINE):
                     isNewLine = True
             else:
                 if(isNewLine):
@@ -76,8 +76,6 @@ class KeyboardModel:
 
         return returnString
 
-        
-        
     @staticmethod
     def _split_row(row):
         """

@@ -30,10 +30,10 @@ class MainView:
         # Start Tkinter event loop
         root.mainloop()
 
-    def _edit_text(self, txt):
+    def _edit_text(self, content_txt):
         #print(txt)
         self.text_widget.delete(1.0, "end-1c")
-        self.text_widget.insert("end-1c", txt)
+        self.text_widget.insert("end-1c", content_txt)
 
     def _on_edit_click(self):
         """
