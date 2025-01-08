@@ -1,0 +1,8 @@
+LINHA ?
+GRUPO ?
+TECLA TECLA_IMAGEM CAT_IMG_capa2\30777.bmp:Teste ? Teste;;; 1 -1 -1
+TECLA TECLA_IMAGEM CAT_IMG_capa2\6009.bmp:Ola ? Ola;;; 1 -1 -1
+LINHA ?
+GRUPO ?
+TECLA TECLA_NORMAL Adeus Adeus Adeus;;; 1 -1 -1
+TECLA TECLA_NORMAL Sim Sim Sim;;; 1 -1 -1

@@ -1,6 +1,7 @@
 
 import codecs
 import re
+import os
 
 
 class KeyboardModel:
@@ -13,7 +14,9 @@ class KeyboardModel:
         """
         Creates a .tec file using the matrix and downloaded images.
         """
-        keyboard_file = f"{keyboard_name}.tec"
+        appdata_dir = os.getenv('APPDATA')  # This fetches the path to %APPDATA%
+        keyboard_file = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/{keyboard_name}.tec")
+        
         try:
             with codecs.open(keyboard_file, "w", "cp1252") as file:
                 for row in matrix:
