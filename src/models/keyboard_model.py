@@ -31,7 +31,7 @@ class KeyboardModel:
 
                             image_id = image_ids.pop(0)
                             file.write(
-                                f"TECLA TECLA_IMAGEM CAT_IMG_{keyboard_name}\\{image_id}.bmp:{clean_word} ? {clean_word};;; 1 -1 -1\n"
+                                f"TECLA TECLA_IMAGEM CAT_IMG_{keyboard_name}\\{image_id}.bmp:{clean_word} ? CAT_IMG_{keyboard_name}\\{image_id}.bmp 1 -1 -1\n"
                             )
                         else:
                             file.write(f"TECLA TECLA_NORMAL {word} {word} {word};;; 1 -1 -1\n")
@@ -42,7 +42,9 @@ class KeyboardModel:
         """
         Creates a .tec file using the matrix and downloaded images.
         """
-        file = open(keyboard_name + ".tec", "r") # Open File
+        appdata_dir = os.getenv('APPDATA')  # This fetches the path to %APPDATA%
+        keyboard_file = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/{keyboard_name}.tec")
+        file = open(keyboard_file, "r") # Open File
         lines = list(file) # list of lines in file
         keys = list() # list of keys from keyboard
         count = 0 # regular count in order to count the first two lines that are just for create another line
