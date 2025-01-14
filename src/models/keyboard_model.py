@@ -44,7 +44,9 @@ class KeyboardModel:
         """
         appdata_dir = os.getenv('APPDATA')  # This fetches the path to %APPDATA%
         keyboard_file = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/{keyboard_name}.tec")
+        print("KEYBOARD: ", keyboard_file)
         file = open(keyboard_file, "r") # Open File
+        print(file)
         lines = list(file) # list of lines in file
         keys = list() # list of keys from keyboard
         count = 0 # regular count in order to count the first two lines that are just for create another line

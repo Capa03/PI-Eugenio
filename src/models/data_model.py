@@ -32,8 +32,8 @@ class DataModel:
         except Exception as e:
             raise RuntimeError(f"Error in processing images: {e}")
 
-    def _read_file(self, keyboard_name):
-        return self.keyboard._edit_keyboard(keyboard_name)
+    def _read_file(self, path):
+        return self.keyboard._edit_keyboard(path)
 
 
     def _search_images(self, matrix):
