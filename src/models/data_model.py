@@ -61,7 +61,9 @@ class DataModel:
         """
         Downloads and saves images.
         """
-        os.makedirs(self._get_eugenio_path(keyboard_name), exist_ok=True) 
+        appdata_dir = os.getenv('APPDATA')  # This fetches the path to %APPDATA%
+        output_dir = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/CAT_IMG_{keyboard_name}")
+        os.makedirs(output_dir, exist_ok=True) 
 
         for image_id in image_ids:
             try:
@@ -106,18 +108,6 @@ class DataModel:
                     else:
                         invalid_words.append(clean_word)
         return filtered_ids, invalid_words
-    
-    
-    def _get_eugenio_path(self, keyboard_name):
-        """
-        Returns the path to the Eugénio 3.0 keyboard file.
-
-        Returns:
-            str: The path to the keyboard file.
-        """
-        appdata_dir = os.getenv('APPDATA')  # This fetches the path to %APPDATA%
-        keyboard_file = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/{keyboard_name}.tec")
-        return keyboard_file
     
     @staticmethod
     def _split_row(row):
