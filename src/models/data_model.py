@@ -61,7 +61,7 @@ class DataModel:
         """
         Downloads and saves images.
         """
-        os.makedirs(self._get_eugenio_path(self, keyboard_name), exist_ok=True) 
+        os.makedirs(self._get_eugenio_path(keyboard_name), exist_ok=True) 
 
         for image_id in image_ids:
             try:
