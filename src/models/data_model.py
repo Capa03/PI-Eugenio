@@ -32,8 +32,8 @@ class DataModel:
         except Exception as e:
             raise RuntimeError(f"Error in processing images: {e}")
 
-    def _read_file(self, keyboard_name):
-        return self.keyboard._edit_keyboard(keyboard_name)
+    def _read_file(self, path):
+        return self.keyboard._edit_keyboard(path)
 
 
     def _search_images(self, matrix):
@@ -53,26 +53,24 @@ class DataModel:
                             responses.append((clean_word, response.json()))
                         else:
                             errors.append(clean_word)
-                            print(f"No data found for: {clean_word} (Status code: {response.status_code})")
                     except requests.exceptions.RequestException as e:
                         errors.append(clean_word)
-                        print(f"API request error for '{clean_word}': {e}")
         return responses, errors
 
     def _download_images(self, image_ids, keyboard_name):
         """
         Downloads and saves images.
         """
-        output_dir = f"CAT_IMG_{keyboard_name}"
-        os.makedirs(output_dir, exist_ok=True)
+        appdata_dir = os.getenv('APPDATA')  # This fetches the path to %APPDATA%
+        output_dir = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/CAT_IMG_{keyboard_name}")
+        os.makedirs(output_dir, exist_ok=True) 
 
         for image_id in image_ids:
             try:
                 response = requests.get(f"{self.base_url}/pictograms/{image_id}?download=true")
                 if response.status_code == 200:
                     self._save_image(response, image_id, output_dir)
-                else:
-                    print(f"Failed to download image ID {image_id}. Status code: {response.status_code}")
+
             except Exception as e:
                 print(f"Failed to download image {image_id}: {e}")
 

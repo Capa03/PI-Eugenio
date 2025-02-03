@@ -32,23 +32,23 @@ class MainController:
             return        
         self.view.show_error(enum_type.Message.SUCCESS, f"Keyboard created with the words: {user_input}")
 
-    def on_edit(self, keyboard_name):
+    def on_edit(self, file_path):
         """
-        Processa a entrada do usuário e aciona a lógica de negócio.
+        Handles the edit request by calling the model's edit functionality.
         """
-        if not keyboard_name:
-            self.view.show_error(enum_type.Message.ERROR, "Text input and keyboard name cannot be empty.")
-            return
-        fileTxt = self.model._read_file(keyboard_name)
-        self.view._edit_text(fileTxt)
-        # funcao view txt
-
+        try:
+            edited_content = self.model._read_file(file_path)
+            self.view._edit_text(edited_content)
+        except Exception as e:
+            self.view.show_error(enum_type.Message.ERROR, f"Failed to edit file: {e}")
+    
 
 
     def _extract_words_from_input(self, input_text):
         """
-        Filtra e organiza palavras dentro de colchetes em uma matriz de linhas.
+        Filters and organizes words inside brackets into a matrix of lines.
         """
+
         lines = input_text.splitlines()
         word_matrix = []
 
