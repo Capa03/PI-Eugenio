@@ -9,9 +9,14 @@ class MainView:
 
     def display_window(self):
         root = Tk()
-        root.title("Image Search and Download")
+        icon = PhotoImage(file="./src/assets/image/eugenio.png")
+        root.tk.call('wm', 'iconphoto', root._w, icon)
+        root.title("Editor de Teclados para o Eugénio V3")
         root.geometry("500x400")
         root.configure(bg="#F7F9FC")
+
+        root.grid_columnconfigure(0, weight=1)
+        root.grid_rowconfigure(1, weight=1)
 
         instruction_label = Label(
             root,
@@ -23,19 +28,31 @@ class MainView:
             fg="#2C3E50",
             font=("Arial", 10),
         )
-        instruction_label.pack(pady=10)
+        instruction_label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
         self.text_widget = Text(root, height=10, width=40, bg="#ECF0F1", fg="#34495E", font=("Arial", 10), bd=0)
-        self.text_widget.pack(pady=10)
+        self.text_widget.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+
+        hint_label = Label(
+            root,
+            text="Digite o nome do teclado:",
+            wraplength=450,
+            justify="left",
+            bg="#F7F9FC",
+            fg="#2C3E50",
+            font=("Arial", 10),
+        )
+        hint_label.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
 
         self.keyboard_name = Entry(
             root, width=40, bg="#ECF0F1", fg="#34495E", font=("Arial", 10), bd=0, justify="center"
         )
-        self.keyboard_name.insert(0, "Digite o nome do teclado")
-        self.keyboard_name.pack(pady=20)
+        self.keyboard_name.grid(row=3, column=0, padx=20, pady=5, sticky="ew")
 
         button_frame = Frame(root, bg="#F7F9FC")
-        button_frame.pack(pady=10)
+        button_frame.grid(row=4, column=0, pady=10, sticky="ew")
+        button_frame.grid_columnconfigure(0, weight=1)
+        button_frame.grid_columnconfigure(1, weight=1)
 
         button_style = {
             "bg": "#3498DB",
@@ -49,7 +66,7 @@ class MainView:
         }
 
         submit_button = Button(button_frame, text="Submit", command=self._on_submit_click, **button_style)
-        submit_button.pack(side=LEFT, padx=10)
+        submit_button.grid(row=0, column=0, padx=10, sticky="ew")
 
         edit_button = Button(
             button_frame,
@@ -57,12 +74,11 @@ class MainView:
             command=self._on_edit_click,
             **{**button_style, "bg": "#2ECC71", "activebackground": "#27AE60"},
         )
-        edit_button.pack(side=LEFT, padx=10)
+        edit_button.grid(row=0, column=1, padx=10, sticky="ew")
 
         root.mainloop()
         
     def _edit_text(self, content_txt):
-        #print(txt)
         self.text_widget.delete(1.0, "end-1c")
         self.text_widget.insert("end-1c", content_txt)
 
@@ -86,6 +102,8 @@ class MainView:
         if file_path:  # If a file is selected
             path = os.path.basename(file_path).replace(".tec", "")
             print("LOCAL: ", path)
+            self.clearBox()
+            self.keyboard_name.insert(0, path)
             self.controller.on_edit(path)
 
     def _on_submit_click(self):
@@ -98,3 +116,7 @@ class MainView:
             messagebox.showerror("Error", message)
         elif type == enum_type.Message.SUCCESS:
             messagebox.showinfo("Success", message)
+            
+    def clearBox(self):
+        self.keyboard_name.delete(0, END)
+        return
