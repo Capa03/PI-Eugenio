@@ -65,12 +65,12 @@ class MainView:
             "height": 2,
         }
 
-        submit_button = Button(button_frame, text="Submit", command=self._on_submit_click, **button_style)
+        submit_button = Button(button_frame, text="Criar", command=self._on_submit_click, **button_style)
         submit_button.grid(row=0, column=0, padx=10, sticky="ew")
 
         edit_button = Button(
             button_frame,
-            text="Edit",
+            text="Editar",
             command=self._on_edit_click,
             **{**button_style, "bg": "#2ECC71", "activebackground": "#27AE60"},
         )
