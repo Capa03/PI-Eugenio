@@ -29,7 +29,7 @@ class MainView:
 
         instruction_label = Label(
             root,
-            text="Para adicionar pictograma utilize [], para adicionar uma palavra escreva-a.\n"
+            text="Para adicionar pictograma utilize a palavra desejada entre [], para adicionar uma palavra normal escreva-a.\n"
                 "Escreva as palavras pela ordem que quer que apareçam.",
             wraplength=450,
             justify="left",
@@ -39,7 +39,10 @@ class MainView:
         )
         instruction_label.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
 
-        self.text_widget = Text(root, height=10, width=40, bg="#ECF0F1", fg="#34495E", font=("Arial", 10), bd=0)
+        self.text_widget = Text(
+            root, height=10, width=40, bg="#ECF0F1", fg="#34495E", font=("Arial", 10), 
+            bd=2, relief="solid", highlightthickness=1, highlightbackground="#95A5A6"
+        )
         self.text_widget.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         hint_label = Label(
@@ -54,7 +57,8 @@ class MainView:
         hint_label.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
 
         self.keyboard_name = Entry(
-            root, width=40, bg="#ECF0F1", fg="#34495E", font=("Arial", 10), bd=0, justify="center"
+            root, width=40, bg="#ECF0F1", fg="#34495E", font=("Arial", 10), 
+            bd=2, relief="solid", highlightthickness=1, highlightbackground="#95A5A6"
         )
         self.keyboard_name.grid(row=3, column=0, padx=20, pady=5, sticky="ew")
 
