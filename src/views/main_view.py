@@ -14,6 +14,15 @@ class MainView:
         root.title("Editor de Teclados para o Eugénio V3")
         root.geometry("500x400")
         root.configure(bg="#F7F9FC")
+        
+        root.update_idletasks()
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        width = 500  
+        height = 400 
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+        root.geometry(f"{width}x{height}+{x}+{y}")
 
         root.grid_columnconfigure(0, weight=1)
         root.grid_rowconfigure(1, weight=1)
