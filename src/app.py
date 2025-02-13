@@ -23,8 +23,8 @@ def show_intro_screen():
     frame = tk.Frame(intro_root, padx=20, pady=20)
     frame.pack(expand=True)
 
-    tk.Label(frame, text="Bem-vindo ao Editor de Teclados Eugénio V3", font=("Arial", 16, "bold")).pack(pady=10)
-    tk.Label(frame, text="Este software permite criar e editar teclados personalizados para comunicação.",
+    tk.Label(frame, text="Bem-vindo ao Editor de Teclados", font=("Arial", 16, "bold")).pack(pady=10)
+    tk.Label(frame, text="Este software permite criar e editar teclados personalizados para o Eugénio.",
              wraplength=400, justify="left", font=("Arial", 12)).pack(pady=10)
 
     show_intro_var = tk.BooleanVar(value=False)  
