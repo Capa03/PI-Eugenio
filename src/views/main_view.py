@@ -14,7 +14,7 @@ class MainView:
         root.title("Editor de Teclados para o Eugénio V3")
         root.geometry("500x400")
         root.configure(bg="#F7F9FC")
-        
+
         root.update_idletasks()
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
@@ -30,7 +30,7 @@ class MainView:
         instruction_label = Label(
             root,
             text="Para adicionar pictograma utilize [], para adicionar uma palavra escreva-a.\n"
-                 "Escreva as palavras pela ordem que quer que apareçam.",
+                "Escreva as palavras pela ordem que quer que apareçam.",
             wraplength=450,
             justify="left",
             bg="#F7F9FC",
@@ -85,7 +85,15 @@ class MainView:
         )
         edit_button.grid(row=0, column=1, padx=10, sticky="ew")
 
+        def on_close():
+            """Ask user for confirmation before closing the app."""
+            if messagebox.askyesno("Confirmar saída", "Tem certeza que deseja fechar o aplicação?"):
+                root.destroy()  # Close the window if user confirms
+
+        root.protocol("WM_DELETE_WINDOW", on_close)  # Bind close button event
+
         root.mainloop()
+
         
     def _edit_text(self, content_txt):
         self.text_widget.delete(1.0, "end-1c")

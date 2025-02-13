@@ -30,13 +30,19 @@ def show_intro_screen():
     show_intro_var = tk.BooleanVar(value=False)  
     check_btn = tk.Checkbutton(frame, text="Não mostrar mais", variable=show_intro_var, font=("Arial", 10))
     check_btn.pack(pady=5)
-
+    
     def continue_to_app():
         save_user_preference(show_intro_var.get())  
-        intro_root.destroy()  # Close the intro screen
+        intro_root.destroy()  
 
+    def close_app():
+        """Close the entire application if the X button is clicked."""
+        os._exit(0)  
+        
     tk.Button(frame, text="Continuar", command=continue_to_app, font=("Arial", 12, "bold"), bg="#3498DB", fg="white").pack(pady=10)
 
+    intro_root.protocol("WM_DELETE_WINDOW", close_app)
+    
     intro_root.update_idletasks()
     width, height = 450, 250  
     x = (screen_width // 2) - (width // 2)
