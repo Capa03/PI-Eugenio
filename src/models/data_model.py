@@ -108,7 +108,7 @@ class DataModel:
                     else:
                         invalid_words.append(clean_word)
         return filtered_ids, invalid_words
-    
+    @staticmethod
     def _split_row(row):
         """
         Splits a string row into words and bracketed terms, removing unwanted characters.

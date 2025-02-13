@@ -87,15 +87,20 @@ class KeyboardModel:
         except Exception as e:
             raise RuntimeError(f"Failed to create keyboard file: {e}")
     
-    def _get_eugenio_path(self, keyboard_name):
-        """
-        Returns the path to the Eugénio 3.0 keyboard file.
 
-        Returns:
-            str: The path to the keyboard file.
+    def _get_eugenio_path(self, keyboard_name):
+        """Returns the path to the Eugénio 3.0 keyboard file, 
+        handling potential duplicates by appending a number.
         """
-        appdata_dir = os.getenv('APPDATA')  # This fetches the path to %APPDATA%
-        keyboard_file = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/{keyboard_name}.tec")
+        appdata_dir = os.getenv('APPDATA')
+        base_keyboard_file = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/{keyboard_name}.tec")
+        keyboard_file = base_keyboard_file
+
+        counter = 1
+        while os.path.exists(keyboard_file):
+            keyboard_file = os.path.join(appdata_dir, f"LabSI2-INESC-ID/Eugénio 3.0/{keyboard_name}({counter}).tec")
+            counter += 1
+
         return keyboard_file
 
 

@@ -82,8 +82,6 @@ class MainView:
         self.text_widget.delete(1.0, "end-1c")
         self.text_widget.insert("end-1c", content_txt)
 
-
-
     def _on_edit_click(self):
         """
         Handles the Edit button click event, opens file picker in a specific folder.
