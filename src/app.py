@@ -1,13 +1,13 @@
 import os
 import tkinter as tk
 from PIL import Image, ImageTk
-from controllers.main_controller import MainController  # Ensure this import is correct
+from controllers.main_controller import MainController  
 
 def show_splash_screen(app):
     """Displays a responsive splash screen."""
     splash_root = tk.Tk()
-    splash_root.overrideredirect(True)  # Remove window border
-    splash_root.title("Splash Screen")  # Optional title for debugging
+    splash_root.overrideredirect(True) 
+
 
     screen_width = splash_root.winfo_screenwidth()
     screen_height = splash_root.winfo_screenheight()
@@ -16,18 +16,16 @@ def show_splash_screen(app):
     splash_label.pack(pady=20)
 
     try:
-        # Ensure the relative path is resolved from the script's directory
         script_dir = os.path.dirname(os.path.abspath(__file__))  
         image_path = os.path.join(script_dir, "assets", "image", "eugenio.png")
 
-        print(f"Loading image from: {image_path}")  # Debugging: Print the absolute image path
+        print(f"Loading image from: {image_path}")  
 
         if not os.path.exists(image_path):
             raise FileNotFoundError(f"Image not found at {image_path}")
 
         original_image = Image.open(image_path)
 
-        # Resize image proportionally
         max_width = int(screen_width * 0.5)
         max_height = int(screen_height * 0.5)
         original_width, original_height = original_image.size
@@ -40,10 +38,10 @@ def show_splash_screen(app):
         else:
             resized_image = original_image
 
-        splash_image = ImageTk.PhotoImage(resized_image)  # Convert image to Tk format
+        splash_image = ImageTk.PhotoImage(resized_image)  
 
         image_label = tk.Label(splash_root, image=splash_image)
-        image_label.image = splash_image  # Keep a reference
+        image_label.image = splash_image 
         image_label.pack()
 
     except FileNotFoundError as e:
@@ -57,19 +55,19 @@ def show_splash_screen(app):
 
     def destroy_splash():
         splash_root.destroy()
-        app.run()  # Start the main application
+        app.run()  
 
-    # Center the splash window
-    splash_root.update_idletasks()  # Ensure geometry calculations are correct
+
+    splash_root.update_idletasks()  
     width = splash_root.winfo_width()
     height = splash_root.winfo_height()
     x = (screen_width // 2) - (width // 2)
     y = (screen_height // 2) - (height // 2)
     splash_root.geometry(f"{width}x{height}+{x}+{y}")  
 
-    splash_root.after(2000, destroy_splash)  # 2-second delay
+    splash_root.after(2000, destroy_splash) 
     splash_root.mainloop()
 
 if __name__ == "__main__":
-    app = MainController()  # Create the MainController instance *first*
-    show_splash_screen(app)  # Pass it to the splash screen function
+    app = MainController()  
+    show_splash_screen(app)  
